@@ -18,10 +18,9 @@ def root():
       '''
   elif (request.method == "POST"):
     file = request.files["file"]
-    file.save("/tmp/resnet_images/{}".format(file.filename))
+    file.save("/{}".format(file.filename))
     start = time.time()
     print(predict(file.filename))
-    print(time.time() - start)
-    return file.filename
+    return str(time.time() - start)
   else:
     return "Unknown"
