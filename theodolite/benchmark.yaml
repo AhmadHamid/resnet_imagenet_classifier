@@ -1,0 +1,55 @@
+apiVersion: theodolite.rocks/v1beta1
+kind: benchmark
+metadata:
+  name: resnet-classifier-benchmark
+spec:
+  sut:
+    resources:
+      - configMap:
+          name: "rs-task"
+          files:
+            - system.yaml
+            - service.yaml
+  loadGenerator:
+    resources:
+      - configMap:
+          name: "rs-task"
+          files:
+            - load.yaml
+  resourceTypes:
+    - typeName: "Instances"
+      patchers:
+        - type: "ReplicaPatcher"
+          resource: "system.yaml"
+  loadTypes:
+    - typeName: "Threads"
+      patchers:
+        - type: "EnvVarPatcher"
+          resource: "load.yaml"
+          properties:
+            variableName: "RS_THREADS"
+            container: "load"
+    - typeName: "Instances"
+      patchers:
+        - type: "ReplicaPatcher"
+          resource: "load.yaml"
+    - typeName:
+      patchers:
+        - type: "EnvVarPatcher"
+          resource: "load.yaml"
+          properties:
+            variableName: "RS_RATE"
+            container: "load"
+  slos:
+    - name: "cpu usage"
+      sloType: "generic"
+      prometheusUrl: "http://prometheus-operated:9090"
+      offset: 0
+      properties:
+        externalSloUrl: "http://localhost:8082"
+        promQLQuery: '(sum((irate(container_cpu_usage_seconds_total{namespace="theodolite", container="system", service="prometheus-kube-prometheus-kubelet"}[1m]))) / sum(kube_pod_container_status_running{namespace="theodolite", container="system"})) * 100'
+        warmup: 30
+        queryAggregation: max
+        repetitionAggregation: median
+        operator: lte
+        threshold: 95

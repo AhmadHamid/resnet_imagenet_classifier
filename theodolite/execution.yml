@@ -1,0 +1,25 @@
+apiVersion: theodolite.rocks/v1beta1
+kind: execution
+metadata:
+  name: resnet-classifier-execution
+spec:
+  benchmark: "resnet-classifier-benchmark"
+  load:
+    loadType: "Instances"
+    loadValues: [10, 20, 50, 70, 100]
+  resources:
+    resourceType: "Instances"
+    resourceValues: [1, 2, 5, 10]
+  slos:
+    - name: "cpu usage"
+  execution:
+    metric: "demand"
+    strategy:
+      name: "BinarySearch"
+      restrictions:
+        - "LowerBound"
+      searchStrategy: "BinarySearch"
+    duration: 90
+    repetitions: 5
+    loadGenerationDelay: 30
+  configOverrides: []
