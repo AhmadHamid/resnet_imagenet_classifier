@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resnet-classifier-load
+  labels:
+    resnet: load
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      resnet: load
+  template:
+    metadata:
+      labels:
+        resnet: load
+    spec:
+      containers:
+        - name: load
+          image: ahmadhamid/resnet-load
+          imagePullPolicy: Always
+          env:
+            - name: RN_HOST
+              value: "resnet-classifier"
+            - name: RN_PORT
+              value: "5000"
+            - name: RN_TIME
+              value: "60"
+            - name: RN_RATE
+              value: "10"
+            - name: RN_THREADS
+              value: "1"
