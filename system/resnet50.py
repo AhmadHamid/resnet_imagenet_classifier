@@ -6,9 +6,8 @@ import numpy as np
 
 model = ResNet50V2(weights="imagenet")
 
-def predict(filename):
-  img_path = "/{}".format(filename)
-  img = image.load_img(img_path, target_size=(224, 224))
+def predict(file_path):
+  img = image.load_img(file_path, target_size=(224, 224))
   x = image.img_to_array(img)
   x = np.expand_dims(x, axis=0)
   x = preprocess_input(x)
