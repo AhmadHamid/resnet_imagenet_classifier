@@ -5,26 +5,43 @@ from resnet50 import predict
 app = Flask(__name__)
 
 file_dir = "/tmp"
-response_times = []
+inference_times = []
+is_correctly_classified = []
 count = 100
 pointer = 0
 
-def set_response_time(res_time: float) -> bool:
-  response_times.insert(pointer, res_time)
-  pointer = (pointer + 1) % count
+def set_inference_time(res_time: float) -> bool:
+  global pointer
 
-def get_response_time() -> float:
+  inference_times.insert(pointer, res_time)
+
+def get_inference_time() -> float:
   sum = 0.0
-  for res_time in response_times:
-    sum += res_time
+  for inference_time in inference_times:
+    sum += inference_time
 
-  if (len(response_times) > 0):
-    return sum / len(response_times)
+  if (len(inference_times) > 0):
+    return sum / len(inference_times)
   else:
     return -1.0
+  
+def get_accuracy() -> float:
+  correct = 0
+
+  for classification in is_correctly_classified:
+    if (classification):
+      correct+= 1
+
+  if (len(is_correctly_classified) > 0):
+    return correct / len(is_correctly_classified)
+  else:
+    return -1
 
 @app.route("/", methods=["GET", "POST"])
 def root():
+  start_response_time = time.time()
+  global pointer, count
+
   if (request.method == "GET"):
     return '''
       <!doctype html>
@@ -32,28 +49,41 @@ def root():
       <h1>Upload new File</h1>
       <form method=post enctype=multipart/form-data>
         <input type=file name=file>
+        <input type=text name=label>
         <input type=submit value=Upload>
       </form>
       '''
   elif (request.method == "POST"):
     file = request.files["file"]
     file_path = os.path.join(file_dir, file.filename)
-    print(file_path)
+
     file.save(file_path)
-    start_time = time.time()
+    start_inference_time = time.time()
     print(predict(file_path))
-    total_time = time.time() - start_time
+    total_inference_time = time.time() - start_inference_time
+    total_response_time = time.time() - start_response_time
 
-    set_response_time(total_time)
+    # TODO: Match Label with prediction
+    if (request.form.get("label") == "123"):
+      is_correctly_classified.insert(pointer, True)
+    else:
+      is_correctly_classified.insert(pointer, False)
 
-    return str(total_time)
+    set_inference_time(total_inference_time)
+
+    pointer = (pointer + 1) % count
+
+    return str(total_inference_time)
   else:
     return "Unknown"
   
 @app.route("/metrics")
 def metrics():
+  # TODO: Recall, Precision, F1-Score
   return json.dumps({
     "cpu": "100",
-    "responseTime": get_response_time()
+    "inferenceTime": get_inference_time(),
+    # TODO: Implement response time calculation
+    "responseTime": get_inference_time(),
+    "accuracy": get_accuracy()
     })
-# TODO: Response TIme, Accuracy, Recall, Precision, F1-Score
