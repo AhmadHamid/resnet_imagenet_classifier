@@ -1,11 +1,12 @@
-import time, json, math
+import time, json, os
 from flask import Flask, request
 from resnet50 import predict
 
 app = Flask(__name__)
 
+file_dir = "/tmp"
 response_times = []
-count = 1000
+count = 100
 pointer = 0
 
 def set_response_time(res_time: float) -> bool:
@@ -36,9 +37,11 @@ def root():
       '''
   elif (request.method == "POST"):
     file = request.files["file"]
-    file.save("/{}".format(file.filename))
+    file_path = os.path.join(file_dir, file.filename)
+    print(file_path)
+    file.save(file_path)
     start_time = time.time()
-    print(predict(file.filename))
+    print(predict(file_path))
     total_time = time.time() - start_time
 
     set_response_time(total_time)
@@ -46,7 +49,7 @@ def root():
     return str(total_time)
   else:
     return "Unknown"
-    
+  
 @app.route("/metrics")
 def metrics():
   return json.dumps({
