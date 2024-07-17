@@ -1,0 +1,66 @@
+apiVersion: theodolite.rocks/v1beta1
+kind: benchmark
+metadata:
+  name: resnet-classifier-benchmark
+spec:
+  sut:
+    resources:
+      - configMap:
+          name: "rs-task"
+          files:
+            - system.yaml
+            - service.yaml
+  loadGenerator:
+    resources:
+      - configMap:
+          name: "rs-task"
+          files:
+            - load.yaml
+  resourceTypes:
+    - typeName: "ModelSize"
+      patchers:
+        - type: "EnvVarPatcher"
+          resource: "system-deployment.yaml"
+          properties:
+            container: "system"
+            variableName: "MODEL_SIZE"
+  loadTypes:
+    - typeName: "CpuLimit"
+      patchers:
+        - type: "ResourceLimitPatcher"
+          resource: "system-deployment.yaml"
+          properties:
+            container: "system"
+            limitedResource: "cpu"
+  slos:
+    - name: "accuracy"
+      sloType: "generic"
+      prometheusUrl: "http://prometheus-operated:9090"
+      offset: 0
+      properties:
+        externalSloUrl: "http://localhost:8082"
+        promQLQuery: rs_accuracy #TODO
+    - name: "responseTime"
+      sloType: "generic"
+      prometheusUrl: "http://prometheus-operated:9090"
+      offset: 0
+      properties:
+        externalSloUrl: "http://localhost:8082"
+        promQLQuery: rs_responseTime #TODO
+    - name: "inferenceTime"
+      sloType: "generic"
+      prometheusUrl: "http://prometheus-operated:9090"
+      offset: 0
+      properties:
+        externalSloUrl: "http://localhost:8082"
+        promQLQuery: rs_inferenceTime #TODO
+    - name: "cpu"
+      sloType: "generic"
+      prometheusUrl: "http://prometheus-operated:9090"
+      offset: 0
+      properties:
+        externalSloUrl: "http://localhost:8082"
+        promQLQuery: rs_cpu #TODO
+
+
+

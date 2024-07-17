@@ -42,5 +42,5 @@ func main() {
 		ctx.String(http.StatusOK, "%s", fmt.Sprintf("rs_cpu %s\nrs_inference_time %f\nrs_response_time %f\nrs_accuracy %f", metric.CPU, metric.InferenceTime, metric.ResponseTime, metric.Accuracy))
 	})
 
-	router.Run()
+	router.Run(":8081")
 }
