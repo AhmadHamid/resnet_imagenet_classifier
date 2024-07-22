@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  labels:
+    resnet: monitor
+  name: monitor-pod-monitor
+spec:
+  selector:
+    matchLabels:
+      resnet: monitor
+  podMetricsEndpoints:
+    - port: moinitor
+      path: /metrics

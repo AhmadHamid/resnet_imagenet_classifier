@@ -5,11 +5,11 @@ metadata:
 spec:
   benchmark: "resnet-classifier-benchmark"
   load:
-    loadType: "CpuLimit"
-    loadValues: [1, 2, 4]
+    loadType: "ModelSize"
+    loadValues: [50, 101, 152]
   resources:
-    resourceType: "ModelSize"
-    resourceValues: [1, 2, 3]
+    resourceType: "NodeType"
+    resourceValues: [ "dev", "prod" ]
   slos:
     - name: "responseTime"
   execution:

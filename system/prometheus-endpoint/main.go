@@ -6,7 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-
+    "os"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,11 +18,12 @@ type Metrics struct {
 }
 
 func main() {
+    metricUrl := os.Getenv("METRIC_URL")
 	router := gin.Default()
 
-	router.GET("/", func(ctx *gin.Context) {
+	router.GET("/metrics", func(ctx *gin.Context) {
 		// TODO: Set Timeout for GET request
-		res, err := http.Get("http://localhost:5000/metrics")
+		res, err := http.Get(metricUrl)
 		if err != nil {
 			ctx.String(http.StatusInternalServerError, "%s", "Internal Error")
 			log.Panic(err)

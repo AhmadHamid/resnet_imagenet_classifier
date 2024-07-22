@@ -9,7 +9,7 @@ spec:
     loadValues: [1, 2, 4]
   resources:
     resourceType: "ModelSize"
-    resourceValues: [1, 2, 3]
+    resourceValues: [50, 101, 152]
   slos:
     - name: "cpu"
   execution:

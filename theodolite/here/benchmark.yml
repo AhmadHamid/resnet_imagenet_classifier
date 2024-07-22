@@ -6,24 +6,26 @@ spec:
   sut:
     resources:
       - configMap:
-          name: "rs-task"
+          name: "resnet-system-configmap"
           files:
-            - system.yaml
-            - service.yaml
+            - monitor-deployment.yaml
+            - monitor-service.yaml
+            - service-monitor.yaml
+            - system-deployment.yaml
+            - system-service.yaml
   loadGenerator:
     resources:
       - configMap:
-          name: "rs-task"
+          name: "resnet-system-configmap"
           files:
             - load.yaml
   resourceTypes:
-    - typeName: "ModelSize"
+    - typeName: "NodeType"
       patchers:
-        - type: "EnvVarPatcher"
-          resource: "system-deployment.yaml"
+        - type: "NodeSelectorPatcher"
+          resource: "uc1-load-generator-deployment.yaml"
           properties:
-            container: "system"
-            variableName: "MODEL_SIZE"
+            variableName: "env"
   loadTypes:
     - typeName: "CpuLimit"
       patchers:
@@ -32,6 +34,13 @@ spec:
           properties:
             container: "system"
             limitedResource: "cpu"
+    - typeName: "ModelSize"
+      patchers:
+        - type: "EnvVarPatcher"
+          resource: "system-deployment.yaml"
+          properties:
+            container: "system"
+            variableName: "MODEL_SIZE"
   slos:
     - name: "accuracy"
       sloType: "generic"
@@ -39,28 +48,25 @@ spec:
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: rs_accuracy #TODO
+        promQLQuery: avg_over_time(rs_accuracy[15s]) #TODO
     - name: "responseTime"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: rs_responseTime #TODO
+        promQLQuery: avg_over_time(rs_responseTime[15s]) < 1 #TODO
     - name: "inferenceTime"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: rs_inferenceTime #TODO
+        promQLQuery: avg_over_time(rs_inferenceTime[15s]) < 1 #TODO
     - name: "cpu"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: rs_cpu #TODO
-
-
-
+        promQLQuery: avg_over_time(rs_cpu[15s]) > 80

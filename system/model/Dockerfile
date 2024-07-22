@@ -1,7 +1,7 @@
 FROM golang AS metric-builder
 WORKDIR /app
 
-ADD prometheus-endpoint .
+ADD ../prometheus-endpoint .
 
 RUN ["go", "build", "-o", "rs-metric", "main.go"]
 
@@ -10,7 +10,7 @@ WORKDIR /app
 
 ADD setup.py .
 RUN ["python", "setup.py"]
-ADD . ./system
+ADD .. ./system
 RUN ["pip", "install", "--ignore-installed", "Flask", "pillow"]
 
 COPY --from=metric-builder /app/rs-metric ./metrics
