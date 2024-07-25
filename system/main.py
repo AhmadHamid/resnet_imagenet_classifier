@@ -1,4 +1,4 @@
-import time, json, os
+import time, json, os, re
 from flask import Flask, request
 from resnet50 import predict
 
@@ -13,6 +13,7 @@ pointer = 0
 throughput_per_x_second = 15
 throughput_time = time.time()
 throughput = 0
+total_requests = 0
 
 def set_inference_time(res_time: float) -> bool:
   global pointer
@@ -59,7 +60,7 @@ def get_accuracy() -> float:
 @app.route("/", methods=["GET", "POST"])
 def root():
   start_response_time = time.time()
-  global pointer, count, throughput
+  global pointer, count, throughput, total_requests
 
   if (request.method == "GET"):
     return '''
@@ -84,7 +85,7 @@ def root():
     total_inference_time = time.time() - start_inference_time
     total_response_time = time.time() - start_response_time
 
-    if (request.form.get("label") == prediction[0][0]):
+    if (re.split("(_.*)", request.files["file"].filename)[0] == prediction[0][0]):
       is_correctly_classified.insert(pointer, True)
     else:
       is_correctly_classified.insert(pointer, False)
@@ -93,8 +94,8 @@ def root():
     set_response_time(total_response_time)
 
     pointer = (pointer + 1) % count
-
     throughput += 1
+    total_requests += 1
 
     return str(prediction)
   else:
@@ -102,7 +103,7 @@ def root():
   
 @app.route("/metrics")
 def metrics():
-  global throughput_time, throughput
+  global throughput_time, throughput, total_requests
 
   now = time.time()
   if (now >= throughput_time + throughput_per_x_second):
@@ -114,5 +115,6 @@ def metrics():
     "accuracy": get_accuracy(),
     "inferenceTime": get_inference_time(),
     "responseTime": get_response_time(),
-    "throughput": throughput
+    "throughput": throughput,
+    "total_requests": total_requests
     })
