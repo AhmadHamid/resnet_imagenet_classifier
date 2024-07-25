@@ -10,6 +10,9 @@ response_times = []
 is_correctly_classified = []
 count = 100
 pointer = 0
+throughput_per_x_second = 15
+throughput_time = time.time()
+throughput = 0
 
 def set_inference_time(res_time: float) -> bool:
   global pointer
@@ -56,7 +59,7 @@ def get_accuracy() -> float:
 @app.route("/", methods=["GET", "POST"])
 def root():
   start_response_time = time.time()
-  global pointer, count
+  global pointer, count, throughput
 
   if (request.method == "GET"):
     return '''
@@ -77,6 +80,7 @@ def root():
     start_inference_time = time.time()
     prediction = predict(file_path)
     print(prediction)
+
     total_inference_time = time.time() - start_inference_time
     total_response_time = time.time() - start_response_time
 
@@ -90,16 +94,25 @@ def root():
 
     pointer = (pointer + 1) % count
 
-    return str(total_inference_time)
+    throughput += 1
+
+    return str(prediction)
   else:
     return "Unknown"
   
 @app.route("/metrics")
 def metrics():
+  global throughput_time, throughput
+
+  now = time.time()
+  if (now >= throughput_time + throughput_per_x_second):
+    throughput_time = now
+    throughput = 0
+
   # TODO: Recall, Precision, F1-Score
   return json.dumps({
-    "cpu": "100",
+    "accuracy": get_accuracy(),
     "inferenceTime": get_inference_time(),
     "responseTime": get_response_time(),
-    "accuracy": get_accuracy()
+    "throughput": throughput
     })
