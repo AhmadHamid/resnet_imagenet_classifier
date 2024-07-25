@@ -23,7 +23,7 @@ spec:
     - typeName: "NodeType"
       patchers:
         - type: "NodeSelectorPatcher"
-          resource: "uc1-load-generator-deployment.yaml"
+          resource: "system-deployment.yaml"
           properties:
             variableName: "env"
   loadTypes:
@@ -48,21 +48,24 @@ spec:
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: avg_over_time(rs_accuracy[15s]) #TODO
+        promQLQuery: avg_over_time(rs_accuracy[15s])
+        warmup: 15
     - name: "responseTime"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: avg_over_time(rs_responseTime[15s]) < 1 #TODO
+        promQLQuery: avg_over_time(rs_responseTime[15s]) < 1
+        warmup: 15
     - name: "inferenceTime"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: avg_over_time(rs_inferenceTime[15s]) < 1 #TODO
+        promQLQuery: avg_over_time(rs_inferenceTime[15s]) < 1
+        warmup: 15
     - name: "cpu"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
@@ -70,3 +73,4 @@ spec:
       properties:
         externalSloUrl: "http://localhost:8082"
         promQLQuery: avg_over_time(rs_cpu[15s]) > 80
+        warmup: 15
