@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 file_dir = "/tmp"
 inference_times = []
+response_times = []
 is_correctly_classified = []
 count = 100
 pointer = 0
@@ -24,7 +25,22 @@ def get_inference_time() -> float:
     return sum / len(inference_times)
   else:
     return -1.0
-  
+
+def set_response_time(res_time: float) -> bool:
+  global pointer
+
+  response_times.insert(pointer, res_time)
+
+def get_response_time() -> float:
+  sum = 0.0
+  for response_time in response_times:
+    sum += response_time
+
+  if (len(response_times) > 0):
+    return sum / len(response_times)
+  else:
+    return -1.0
+
 def get_accuracy() -> float:
   correct = 0
 
@@ -59,17 +75,18 @@ def root():
 
     file.save(file_path)
     start_inference_time = time.time()
-    print(predict(file_path))
+    prediction = predict(file_path)
+    # print(prediction)
     total_inference_time = time.time() - start_inference_time
     total_response_time = time.time() - start_response_time
 
-    # TODO: Match Label with prediction
-    if (request.form.get("label") == "123"):
+    if (request.form.get("label") == prediction[0][0][0]):
       is_correctly_classified.insert(pointer, True)
     else:
       is_correctly_classified.insert(pointer, False)
 
     set_inference_time(total_inference_time)
+    set_response_time(total_response_time)
 
     pointer = (pointer + 1) % count
 
@@ -83,7 +100,6 @@ def metrics():
   return json.dumps({
     "cpu": "100",
     "inferenceTime": get_inference_time(),
-    # TODO: Implement response time calculation
-    "responseTime": get_inference_time(),
+    "responseTime": get_response_time(),
     "accuracy": get_accuracy()
     })
