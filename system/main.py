@@ -76,11 +76,11 @@ def root():
     file.save(file_path)
     start_inference_time = time.time()
     prediction = predict(file_path)
-    # print(prediction)
+    print(prediction)
     total_inference_time = time.time() - start_inference_time
     total_response_time = time.time() - start_response_time
 
-    if (request.form.get("label") == prediction[0][0][0]):
+    if (request.form.get("label") == prediction[0][0]):
       is_correctly_classified.insert(pointer, True)
     else:
       is_correctly_classified.insert(pointer, False)

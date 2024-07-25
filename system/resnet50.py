@@ -1,7 +1,6 @@
 import tensorflow as tf
-from tensorflow.keras.applications.resnet_v2 import ResNet50V2
+from tensorflow.keras.applications.resnet_v2 import ResNet50V2,preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 import numpy as np
 
 model = ResNet50V2(weights="imagenet")
@@ -13,4 +12,4 @@ def predict(file_path):
   x = preprocess_input(x)
 
   preds = model.predict(x)
-  return decode_predictions(preds, top=3)
+  return decode_predictions(preds, top=3)[0]
