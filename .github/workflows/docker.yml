@@ -1,0 +1,16 @@
+name: Container Image CI
+
+on:
+  push:
+    branches-ignore: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: action/checkout@v4
+      - name: Build Image
+        run: docker build -f system/Dockerfile -t ${{github.repository}}
