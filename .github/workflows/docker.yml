@@ -13,4 +13,4 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Build Image
-        run: docker build -f system/Dockerfile -t ${{github.repository}}
+        run: docker build -f system/Dockerfile -t ${{github.repository}}/system .
