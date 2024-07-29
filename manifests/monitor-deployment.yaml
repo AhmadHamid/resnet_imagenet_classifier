@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resnet-monitor
+  labels:
+    resnet: monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      resnet: monitor
+  template:
+    metadata:
+      labels:
+        resnet: monitor
+    spec:
+      containers:
+        - name: monitor
+          image: hendrikreiter/resnet-monitor
+          env:
+            - name: METRIC_URL
+              value: http://resnet-classifier:5000/metrics
+          ports:
+            - name: moinitor
+              containerPort: 8081
+          resources:
+            limits:
+              cpu: "500m"
+            requests:
+              cpu: "500m"

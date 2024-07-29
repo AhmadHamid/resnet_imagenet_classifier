@@ -16,7 +16,10 @@ spec:
     spec:
       containers:
         - name: system
-          image: ahmadhamid/resnet-system
+          image: hendrikreiter/resnet-model
+          ports:
+            - name: system
+              containerPort: 5000
           resources:
             limits:
               cpu: "3000m"

@@ -1,0 +1,25 @@
+apiVersion: theodolite.rocks/v1beta1
+kind: execution
+metadata:
+  name: response-time-execution
+spec:
+  benchmark: "resnet-classifier-benchmark"
+  load:
+    loadType: "ModelSize"
+    loadValues: [50, 101, 152]
+  resources:
+    resourceType: "NodeType"
+    resourceValues: [ 1, 2 ]
+  slos:
+    - name: "responseTime"
+  execution:
+    metric: "demand"
+    strategy:
+      name: "BinarySearch"
+      restrictions:
+        - "LowerBound"
+      searchStrategy: "BinarySearch"
+    duration: 90
+    repetitions: 1
+    loadGenerationDelay: 30
+  configOverrides: []
