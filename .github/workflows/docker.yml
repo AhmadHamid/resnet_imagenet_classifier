@@ -11,6 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: action/checkout@v4
+        uses: actions/checkout@v4
       - name: Build Image
         run: docker build -f system/Dockerfile -t ${{github.repository}}
