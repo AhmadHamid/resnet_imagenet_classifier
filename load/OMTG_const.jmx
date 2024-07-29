@@ -11,7 +11,7 @@
         <stringProp name="directory">/home/arh/Documents/Kiel/P1/resnet_imagenet_classifier/load/assets</stringProp>
         <stringProp name="variableName"></stringProp>
         <boolProp name="useFullPath">true</boolProp>
-        <boolProp name="randomOrder">true</boolProp>
+        <boolProp name="randomOrder">false</boolProp>
         <boolProp name="recursiveListing">false</boolProp>
         <boolProp name="rewindOnTheEndOfList">true</boolProp>
         <boolProp name="reReadDirectory">false</boolProp>
@@ -43,20 +43,11 @@
           </elementProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="filename" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${file}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">filename</stringProp>
-                <stringProp name="HTTPArgument.content_type">text/plain</stringProp>
-              </elementProp>
-            </collectionProp>
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Code Assertion" enabled="true">
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Code Assertion">
             <collectionProp name="Asserion.test_strings">
               <stringProp name="49586">200</stringProp>
             </collectionProp>
