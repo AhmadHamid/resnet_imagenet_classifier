@@ -117,4 +117,4 @@ def metrics():
     "responseTime": get_response_time(),
     "throughput": throughput,
     "total_requests": total_requests
-    })
+  })
