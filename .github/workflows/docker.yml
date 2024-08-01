@@ -8,8 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  SYSTEM_IMAGE: ${{github.repository}}:system
-  LOAD_IMAGE: ${{github.repository}}:load
+  IMAGE_NAME: ${{github.repository}}
 
 jobs:
   build:
@@ -17,17 +16,21 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
       - name: Login to Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{env.REGISTRY}}
           username: ${{github.repository_owner}}
           password: ${{secrets.GITHUB_TOKEN}}
+
       - name: Extract Image Metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{env.REGISTRY}}/${{env.SYSTEM_IMAGE}}
+          images: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
+          flavor: suffix=system,onlatest=true
+
       - name: Build and Push Image
         id: push
         uses: docker/build-push-action@v6
@@ -35,9 +38,10 @@ jobs:
           context: system/
           push: true
           tags: ${{steps.meta.outputs.tags}}
+
       - name: Generate Artifact Attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{env.REGISTRY}}/${{env.SYSTEM_IMAGE}}
+          subject-name: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
           subject-digest: ${{steps.push.outputs.digest}}
           push-to-registry: true
