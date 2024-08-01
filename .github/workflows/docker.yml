@@ -6,11 +6,18 @@ on:
   pull_request:
     branches: ["main"]
 
+env:
+  REGISTRY: ghcr.io
+  SYSTEM_IMAGE: ${{github.repository}}:system
+  LOAD_IMAGE: ${{github.repository}}:load
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Build Image
-        run: docker build -t ${{github.repository}}/system system/
+      - name: Build System Image
+        run: docker build -t ${{env.SYSTEM_IMAGE}} system/
+      - name: Build load Image
+        run: docker build -t ${{env.LOAD_IMAGE}} load/
