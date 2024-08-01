@@ -17,7 +17,15 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Build System Image
-        run: docker build -t ${{env.SYSTEM_IMAGE}} system/
-      - name: Build load Image
-        run: docker build -t ${{env.LOAD_IMAGE}} load/
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.REGISTRY}}
+          username: ${{github.repository_owner}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - name: Build and Push Image
+        uses: docker/build-push-action@v6
+        with:
+          context: system/
+          push: true
+          tags: ${{env.SYSTEM_IMAGE}}
