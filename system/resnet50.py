@@ -1,9 +1,10 @@
 import os
-
+from PIL import ImageFile
 from tensorflow.keras.applications.resnet_v2 import ResNet50V2, ResNet101V2, ResNet152V2, preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 model = ResNet50V2(weights="imagenet")
 
 def get_model():
