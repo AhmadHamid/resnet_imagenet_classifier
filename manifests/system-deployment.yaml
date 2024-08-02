@@ -23,8 +23,8 @@ spec:
           ports:
             - name: system
               containerPort: 5000
-          resources:
-            limits:
-              cpu: "3000m"
-            requests:
-              cpu: "3000m"
+          # resources:
+          #   limits:
+          #     cpu: "3000m"
+          #   requests:
+          #     cpu: "3000m"
