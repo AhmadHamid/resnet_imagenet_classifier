@@ -14,11 +14,11 @@ spec:
       labels:
         resnet: load
     spec:
+      imagePullSecrets:
+        - name: ghcrkey
       containers:
         - name: load
           image: ghcr.io/ahmadhamid/resnet_imagenet_classifier:load_develop
-          imagePullSecrets:
-            - name: ghcrkey
           imagePullPolicy: Always
           env:
             - name: RN_HOST
