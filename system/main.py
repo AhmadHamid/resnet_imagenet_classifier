@@ -5,7 +5,7 @@ from resnet import ResNet
 
 app = Flask(__name__)
 
-model = ResNet(os.getenv("RS_MODELSIZE"))
+model = ResNet(os.getenv("RN_MODELSIZE"))
 file_dir = "/tmp"
 inference_times = []
 response_times = []
@@ -80,7 +80,7 @@ def root():
 
     file.save(file_path)
     start_inference_time = time.time()
-    prediction = ResNet(os.getenv("RS_MODELSIZE")).predict(file_path)
+    prediction = ResNet(os.getenv("RN_MODELSIZE")).predict(file_path)
     # print(prediction)
 
     total_inference_time = time.time() - start_inference_time
