@@ -25,7 +25,7 @@ spec:
         - type: "NodeSelectorPatcher"
           resource: "system-deployment.yaml"
           properties:
-            variableName: "env"
+            variableName: "RN_NODETYPE"
   loadTypes:
     - typeName: "CpuLimit"
       patchers:
@@ -40,7 +40,7 @@ spec:
           resource: "system-deployment.yaml"
           properties:
             container: "system"
-            variableName: "MODEL_SIZE"
+            variableName: "RN_MODELSIZE"
   slos:
     - name: "accuracy"
       sloType: "generic"
