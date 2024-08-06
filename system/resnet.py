@@ -12,11 +12,11 @@ class ResNet():
       ImageFile.LOAD_TRUNCATED_IMAGES = True
       cls._instance = super(ResNet, cls).__new__(cls)
 
-      if depth == 50:
+      if depth == "50":
         cls.model = ResNet50V2(weights="imagenet")
-      elif depth == 101:
+      elif depth == "101":
         cls.model = ResNet101V2(weights="imagenet")
-      elif depth == 152:
+      elif depth == "152":
         cls.model = ResNet152V2(weights="Imagenet")
       else:
         raise Exception("Unknown Model")
