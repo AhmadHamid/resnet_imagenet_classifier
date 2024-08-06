@@ -1,9 +1,11 @@
 import time, json, os, re
 from flask import Flask, request
-from resnet50 import predict
+from resnet import ResNet
+# from resnet50 import predict
 
 app = Flask(__name__)
 
+model = ResNet(50)
 file_dir = "/tmp"
 inference_times = []
 response_times = []
@@ -69,7 +71,6 @@ def root():
       <h1>Upload new File</h1>
       <form method=post enctype=multipart/form-data>
         <input type=file name=file>
-        <input type=text name=label>
         <input type=submit value=Upload>
       </form>
       '''
@@ -79,8 +80,8 @@ def root():
 
     file.save(file_path)
     start_inference_time = time.time()
-    prediction = predict(file_path)
-    print(prediction)
+    prediction = ResNet(50).predict(file_path)
+    # print(prediction)
 
     total_inference_time = time.time() - start_inference_time
     total_response_time = time.time() - start_response_time
