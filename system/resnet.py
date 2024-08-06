@@ -5,7 +5,6 @@ import numpy as np
 
 class ResNet():
   _instance = None
-  _num = 0
 
   def __new__(cls, depth):
     if cls._instance is None:
