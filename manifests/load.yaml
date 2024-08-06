@@ -25,9 +25,11 @@ spec:
               value: "resnet-classifier"
             - name: RN_PORT
               value: "5000"
+            - name: RN_ASSETS
+              value: "/assets"
             - name: RN_TIME
               value: "60"
             - name: RN_RATE
-              value: "10"
-            - name: RN_THREADS
               value: "1"
+            - name: RN_THREADS
+              value: "0"
