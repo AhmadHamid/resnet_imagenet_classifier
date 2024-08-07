@@ -2,12 +2,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   labels:
-    resnet: monitor
-  name: monitor-pod-monitor
+    app: resnet-classifier-system
+  name: resnet-service-monitor
 spec:
   selector:
     matchLabels:
-      resnet: monitor
+      app: resnet-classifier-system
   podMetricsEndpoints:
-    - port: moinitor
-      path: /metrics
+    - port: metrics
