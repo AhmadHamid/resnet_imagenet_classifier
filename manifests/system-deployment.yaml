@@ -26,6 +26,8 @@ spec:
           ports:
             - name: system
               containerPort: 5000
+            - name: /metrics
+              cointainerPort: 8081
           # resources:
           #   limits:
           #     cpu: "3000m"
