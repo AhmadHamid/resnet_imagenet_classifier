@@ -8,8 +8,6 @@ spec:
       - configMap:
           name: "resnet-system-configmap"
           files:
-            - monitor-deployment.yaml
-            - monitor-service.yaml
             - service-monitor.yaml
             - system-deployment.yaml
             - system-service.yaml
