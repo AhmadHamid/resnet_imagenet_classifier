@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: resnet-classifier-system
   labels:
-    resnet: system
+    app: resnet-classifier-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      resnet: system
+      app: resnet-classifier-system
   template:
     metadata:
       labels:
-        resnet: system
+        app: resnet-classifier-system
     spec:
       imagePullSecrets:
         - name: ghcrkey
@@ -26,8 +26,8 @@ spec:
           ports:
             - name: system
               containerPort: 5000
-            - name: /metrics
-              cointainerPort: 8081
+            - name: metrics
+              containerPort: 8081
           # resources:
           #   limits:
           #     cpu: "3000m"
