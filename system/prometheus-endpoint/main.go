@@ -39,7 +39,7 @@ func main() {
 			log.Panic(err)
 		}
 
-		ctx.String(http.StatusOK, "%s", fmt.Sprintf("rs_cpu %s\nrs_inference_time %f\nrs_response_time %f\nrs_accuracy %f", metric.CPU, metric.InferenceTime, metric.ResponseTime, metric.Accuracy))
+		ctx.String(http.StatusOK, "%s", fmt.Sprintf("rs_cpu %f\nrs_inference_time %f\nrs_response_time %f\nrs_accuracy %f", -1.0, metric.InferenceTime, metric.ResponseTime, metric.Accuracy))
 	})
 
 	router.Run(":8081")
