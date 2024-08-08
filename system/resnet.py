@@ -16,7 +16,7 @@ class ResNet():
       elif depth == "101":
         cls.model = ResNet101V2(weights="imagenet")
       elif depth == "152":
-        cls.model = ResNet152V2(weights="Imagenet")
+        cls.model = ResNet152V2(weights="imagenet")
       else:
         raise Exception("Unknown Model")
 
