@@ -9,7 +9,7 @@ spec:
     loadValues: [50, 101, 152]
   resources:
     resourceType: "NodeType"
-    resourceValues: [ 1, 2 ]
+    resourceValues: [1, 2, 3]
   slos:
     - name: "responseTime"
   execution:
