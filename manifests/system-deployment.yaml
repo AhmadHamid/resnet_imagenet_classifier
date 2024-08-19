@@ -27,7 +27,7 @@ spec:
             - name: system
               containerPort: 5000
             - name: metrics
-              containerPort: 8081
+              containerPort: 2112
           # resources:
           #   limits:
           #     cpu: "3000m"
