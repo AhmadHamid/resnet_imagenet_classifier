@@ -2,45 +2,77 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type Metrics struct {
-	CPU           string  `json:"cpu"`
-	InferenceTime float64 `json:"inferenceTime"`
-	ResponseTime  float64 `json:"responseTime"`
-	Accuracy      float64 `json:"accuracy"`
+	InferenceTime float64 `json:"inferenceTime,omitempty"`
+	ResponseTime  float64 `json:"responseTime,omitempty"`
+	Requests      int     `json:"requests,omitempty"`
+	Accuracy      float64 `json:"accuracy,omitempty"`
+}
+
+var inferenceTime = promauto.NewGauge(prometheus.GaugeOpts{
+	Name: "rn_inference_time_total_seconds",
+	Help: "Total inference time for all requests in seconds",
+})
+
+var responseTime = promauto.NewGauge(prometheus.GaugeOpts{
+	Name: "rn_response_time_total_seconds",
+	Help: "Total response time for all requests in seconds",
+})
+
+var accuracy = promauto.NewGauge(prometheus.GaugeOpts{
+	Name: "rn_accuracy",
+	Help: "123",
+})
+
+var requests = promauto.NewCounter(prometheus.CounterOpts{
+	Name: "rn_requests_responded_total",
+	Help: "Total responded requests",
+})
+
+func recordMetrics() {
+	go func() {
+		for {
+			var metric Metrics
+			// TODO: Set Timeout for GET request
+			res, err := http.Get("http://localhost:5000/metrics")
+			if err != nil {
+				metric = Metrics{}
+				log.Panic(err)
+			} else {
+				body, err := io.ReadAll(res.Body)
+				if err != nil {
+					metric = Metrics{}
+					log.Panic(err)
+				} else {
+					if err := json.Unmarshal(body, &metric); err != nil {
+						metric = Metrics{}
+						log.Panic(err)
+					}
+				}
+			}
+
+			inferenceTime.Set(metric.InferenceTime)
+			responseTime.Set(metric.ResponseTime)
+			accuracy.Set(metric.Accuracy)
+			requests.Add(float64(metric.Requests))
+			time.Sleep(2 * time.Second)
+		}
+	}()
 }
 
 func main() {
-	router := gin.Default()
+	recordMetrics()
 
-	router.GET("/metrics", func(ctx *gin.Context) {
-		// TODO: Set Timeout for GET request
-		res, err := http.Get("http://localhost:5000/metrics")
-		if err != nil {
-			ctx.String(http.StatusInternalServerError, "%s", "Internal Error")
-			log.Panic(err)
-		}
-
-		body, err := io.ReadAll(res.Body)
-		if err != nil {
-			log.Panic(err)
-		}
-
-		var metric Metrics
-
-		if err := json.Unmarshal(body, &metric); err != nil {
-			log.Panic(err)
-		}
-
-		ctx.String(http.StatusOK, "%s", fmt.Sprintf("rs_cpu %f\nrs_inference_time %f\nrs_response_time %f\nrs_accuracy %f", -1.0, metric.InferenceTime, metric.ResponseTime, metric.Accuracy))
-	})
-
-	router.Run(":8081")
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":2112", nil)
 }

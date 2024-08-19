@@ -9,6 +9,6 @@ COPY *.go ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /resnet-monitor
 
-EXPOSE 8081
+EXPOSE 2112
 
 CMD ["/resnet-monitor"]
