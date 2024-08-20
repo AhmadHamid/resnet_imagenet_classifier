@@ -47,7 +47,7 @@ func recordMetrics() {
 			res, err := http.Get("http://localhost:5000/metrics")
 			if err != nil {
 				metric = Metrics{}
-				log.Panic(err)
+				log.Println(err)
 			} else {
 				body, err := io.ReadAll(res.Body)
 				if err != nil {
