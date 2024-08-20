@@ -8,9 +8,9 @@ spec:
       - configMap:
           name: "resnet-system-configmap"
           files:
-            - service-monitor.yaml
             - system-deployment.yaml
             - system-service.yaml
+            # - system-monitor.yaml
   loadGenerator:
     resources:
       - configMap:
@@ -25,13 +25,6 @@ spec:
           properties:
             variableName: "RN_NODETYPE"
   loadTypes:
-    - typeName: "CpuLimit"
-      patchers:
-        - type: "ResourceLimitPatcher"
-          resource: "system-deployment.yaml"
-          properties:
-            container: "system"
-            limitedResource: "cpu"
     - typeName: "ModelSize"
       patchers:
         - type: "EnvVarPatcher"
@@ -46,29 +39,45 @@ spec:
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: avg_over_time(rs_accuracy[15s])
+        promQLQuery: sum(rs_accuracy)
         warmup: 15
+        queryAggregation: median
+        repetitionAggregation: max
+        operator: gte
+        threshold: 0.7
     - name: "responseTime"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: avg_over_time(rs_responseTime[15s]) < 1
+        promQLQuery: sum(rs_response_time)
         warmup: 15
+        queryAggregation: median
+        repetitionAggregation: max
+        operator: lte
+        threshold: 5
     - name: "inferenceTime"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: avg_over_time(rs_inferenceTime[15s]) < 1
+        promQLQuery: sum(rs_inference_time)
         warmup: 15
+        queryAggregation: median
+        repetitionAggregation: max
+        operator: lte
+        threshold: 5
     - name: "cpu"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
       offset: 0
       properties:
         externalSloUrl: "http://localhost:8082"
-        promQLQuery: avg_over_time(rs_cpu[15s]) > 80
+        promQLQuery: 'sum(irate(container_cpu_usage_seconds_total{namespace="theodolite", container="system", service="theodolite-kube-prometheus-kubelet"}[1m])) * 100'
         warmup: 15
+        queryAggregation: median
+        repetitionAggregation: max
+        operator: lte
+        thresholdFromExpression: (2^R) * 4 * 100 * 0.95

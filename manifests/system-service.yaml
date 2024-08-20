@@ -11,6 +11,6 @@ spec:
       name: system
       targetPort: system
       nodePort: 30500
-    - port: 8081
+    - port: 2112
       name: metrics
       targetPort: metrics

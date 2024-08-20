@@ -28,8 +28,8 @@ spec:
             - name: RN_ASSETS
               value: "/assets"
             - name: RN_TIME
-              value: "60"
+              value: "600"
             - name: RN_RATE
-              value: "1"
+              value: "5"
             - name: RN_THREADS
               value: "0"
