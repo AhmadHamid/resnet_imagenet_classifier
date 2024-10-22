@@ -44,7 +44,7 @@ spec:
         queryAggregation: median
         repetitionAggregation: max
         operator: gte
-        threshold: 0.7
+        threshold: 0.8
     - name: "responseTime"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
@@ -56,19 +56,7 @@ spec:
         queryAggregation: median
         repetitionAggregation: max
         operator: lte
-        threshold: 5
-    - name: "inferenceTime"
-      sloType: "generic"
-      prometheusUrl: "http://prometheus-operated:9090"
-      offset: 0
-      properties:
-        externalSloUrl: "http://localhost:8082"
-        promQLQuery: sum(rs_inference_time)
-        warmup: 15
-        queryAggregation: median
-        repetitionAggregation: max
-        operator: lte
-        threshold: 5
+        threshold: 1
     - name: "cpu"
       sloType: "generic"
       prometheusUrl: "http://prometheus-operated:9090"
