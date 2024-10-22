@@ -5,6 +5,7 @@ from resnet import ResNet
 
 app = Flask(__name__)
 
+# TODO: Reset requests metric when read
 model = ResNet(os.getenv("RN_MODELSIZE"))
 file_dir = "/tmp"
 inference_times = []
